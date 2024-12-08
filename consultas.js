@@ -1,6 +1,6 @@
-const pool = require("./server"); // Importa el pool de server.js
+const pool = require("./server"); 
 
-// Función para obtener todos los usuarios
+
 const getUsers = async () => {
   try {
     const result = await pool.query("SELECT * FROM Users");
@@ -11,7 +11,7 @@ const getUsers = async () => {
   }
 };
 
-// Función para obtener un usuario por ID
+
 const getUserById = async (id) => {
   try {
     const result = await pool.query("SELECT * FROM Users WHERE ID = $1", [id]);
@@ -22,7 +22,7 @@ const getUserById = async (id) => {
   }
 };
 
-// Función para crear un nuevo usuario
+
 const createUser = async (nombre, contrasena, celular, email) => {
   try {
     const result = await pool.query(
@@ -36,7 +36,6 @@ const createUser = async (nombre, contrasena, celular, email) => {
   }
 };
 
-// Función para obtener todos los posts
 const getPosts = async () => {
   try {
     const result = await pool.query("SELECT * FROM Posts");
@@ -47,7 +46,6 @@ const getPosts = async () => {
   }
 };
 
-// Función para crear un nuevo post
 const createPost = async (titulo, description, precio, userId) => {
   try {
     const result = await pool.query(
@@ -61,7 +59,6 @@ const createPost = async (titulo, description, precio, userId) => {
   }
 };
 
-// Exportar todas las funciones
 module.exports = {
   getUsers,
   getUserById,
