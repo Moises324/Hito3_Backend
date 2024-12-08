@@ -1,14 +1,16 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const consultas = require("./consultas");  
+const consultas = require("./consultas");
+const dotenv = require("dotenv");
 
-const JWT_SECRET = process.env.JWT_SECRET || "clave_secreta";  
+dotenv.config();
+
+const JWT_SECRET = process.env.JWT_SECRET || "clave_secreta";
 
 const login = async (req, res) => {
   const { email, contrasena } = req.body;
 
   try {
-    // Verificar si el usuario existe
     const user = await consultas.getUserByEmail(email);
     if (!user) {
       return res.status(401).json({ error: "Credenciales inválidas" });
@@ -20,9 +22,9 @@ const login = async (req, res) => {
     }
 
     const token = jwt.sign(
-      { id: user.id, email: user.email },  
-      JWT_SECRET,  
-      { expiresIn: "1h" } 
+      { id: user.id, email: user.email },
+      JWT_SECRET,
+      { expiresIn: "1h" }
     );
 
     res.json({ token });
@@ -33,29 +35,26 @@ const login = async (req, res) => {
 };
 
 const authenticateToken = (req, res, next) => {
-  const token = req.header("Authorization")?.replace("Bearer ", ""); 
+  const token = req.header("Authorization")?.replace("Bearer ", "");
 
   if (!token) {
     return res.status(403).json({ error: "Acceso denegado. No hay token." });
   }
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET);  
-    req.user = decoded;  
-    next();  
+    const decoded = jwt.verify(token, JWT_SECRET);
+    req.user = decoded;
+    next();
   } catch (error) {
     return res.status(401).json({ error: "Token inválido" });
   }
 };
 
-
 const register = async (req, res) => {
   const { nombre, contrasena, celular, email } = req.body;
 
   try {
-    
-    const hashedPassword = await bcrypt.hash(contrasena, 10);  
-
+    const hashedPassword = await bcrypt.hash(contrasena, 10);
     const newUser = await consultas.createUser(nombre, hashedPassword, celular, email);
 
     res.status(201).json({
@@ -70,4 +69,5 @@ const register = async (req, res) => {
   }
 };
 
-module.exports = { login, authenticateToken, register };  
+module.exports = { login, authenticateToken, register };
+
